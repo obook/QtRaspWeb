@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* FullScreen */
 
+    setWindowFlags(Qt::FramelessWindowHint);
     QTimer::singleShot(0, this, SLOT(showFullScreen()));
 
     /* Keyboard */
