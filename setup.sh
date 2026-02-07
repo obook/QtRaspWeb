@@ -29,7 +29,7 @@ error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 # ── Checks ──────────────────────────────────────────────
 
 check_os() {
-    info "Verification du systeme..."
+    info "Vérification du système..."
 
     if [ ! -f /etc/os-release ]; then
         error "/etc/os-release introuvable. Ce script cible PiOS Debian Bookworm."
@@ -38,12 +38,12 @@ check_os() {
     . /etc/os-release
 
     if [ "$VERSION_CODENAME" != "bookworm" ]; then
-        warn "Version detectee : $VERSION_CODENAME (attendu : bookworm)."
-        read -r -p "Continuer quand meme ? [o/N] " answer
+        warn "Version détectée : $VERSION_CODENAME (attendu : bookworm)."
+        read -r -p "Continuer quand même ? [o/N] " answer
         [[ "$answer" =~ ^[oOyY]$ ]] || exit 0
     fi
 
-    info "Systeme : $PRETTY_NAME"
+    info "Système : $PRETTY_NAME"
 }
 
 check_architecture() {
@@ -52,14 +52,14 @@ check_architecture() {
     info "Architecture : $arch"
 
     if [[ "$arch" != aarch64 && "$arch" != armv7l ]]; then
-        warn "Architecture $arch detectee. Ce script est prevu pour Raspberry Pi (aarch64/armv7l)."
+        warn "Architecture $arch détectée. Ce script est prévu pour Raspberry Pi (aarch64/armv7l)."
     fi
 }
 
 # ── Dependencies ────────────────────────────────────────
 
 check_dependencies() {
-    info "Verification des dependances..."
+    info "Vérification des dépendances..."
 
     local missing=()
     for pkg in "${REQUIRED_PACKAGES[@]}"; do
@@ -69,17 +69,17 @@ check_dependencies() {
     done
 
     if [ ${#missing[@]} -eq 0 ]; then
-        info "Toutes les dependances sont installees."
+        info "Toutes les dépendances sont installées."
         return
     fi
 
     warn "Paquets manquants : ${missing[*]}"
-    info "Installation des dependances..."
+    info "Installation des dépendances..."
 
     sudo apt-get update
     sudo apt-get install -y "${missing[@]}"
 
-    info "Dependances installees."
+    info "Dépendances installées."
 }
 
 # ── Build ───────────────────────────────────────────────
@@ -94,10 +94,10 @@ build() {
     make -j"$(nproc)"
 
     if [ ! -f "$BUILD_DIR/$BINARY" ]; then
-        error "Echec de la compilation : binaire introuvable."
+        error "Échec de la compilation : binaire introuvable."
     fi
 
-    info "Compilation reussie : $BUILD_DIR/$BINARY"
+    info "Compilation réussie : $BUILD_DIR/$BINARY"
 }
 
 # ── Main ────────────────────────────────────────────────
