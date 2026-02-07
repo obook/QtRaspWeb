@@ -9,7 +9,7 @@ Navigateur web plein ecran concu pour l'affichage de type kiosque sur Raspberry 
 - Reconnexion automatique en cas d'erreur reseau (toutes les 10 secondes)
 - Curseur de souris masque pour un affichage epure
 - Fermeture via la touche **Echap**
-- URL configurable en argument de ligne de commande
+- URL configurable via fichier `ADMoovQt.json` ou argument de ligne de commande
 
 ## Installation rapide (Raspberry Pi 5 - PiOS Bookworm)
 
@@ -25,14 +25,14 @@ Le binaire est genere dans `src/build/ADMoovPiQt`.
 
 ### Prerequis
 
-- Qt 5 avec les modules : `core`, `gui`, `widgets`, `webkitwidgets`
-- Compilateur C++11
-- qmake
+- Qt 6 avec les modules : `core`, `gui`, `widgets`, `webenginewidgets`
+- Compilateur C++17
+- qmake6
 
 Sur Debian Bookworm / Raspberry Pi OS :
 
 ```bash
-sudo apt install build-essential qtbase5-dev libqt5webkit5-dev
+sudo apt install build-essential qt6-base-dev qt6-webengine-dev
 ```
 
 ### Compilation
@@ -40,7 +40,7 @@ sudo apt install build-essential qtbase5-dev libqt5webkit5-dev
 ```bash
 cd src
 mkdir -p build && cd build
-qmake ../$ADMoovPiQt.pro
+qmake6 ../ADMoovPiQt.pro
 make -j$(nproc)
 ```
 
@@ -54,12 +54,18 @@ Installe le binaire dans `/opt/ADMoovPiQt/bin/`.
 
 ## Utilisation
 
-```bash
-# URL par defaut (https://admoov.albertdemun.education/)
-./ADMoovPiQt
+L'application charge l'URL depuis le fichier `ADMoovQt.json` situe dans le meme repertoire que le binaire. Si ce fichier n'existe pas, il est cree automatiquement avec l'URL par defaut.
 
-# URL personnalisee
-./ADMoovPiQt https://example.com
+```json
+{
+    "URL": "https://www.google.fr"
+}
+```
+
+Un argument en ligne de commande surcharge l'URL du fichier JSON :
+
+```bash
+./ADMoovPiQt [URL]
 ```
 
 ## Comportement

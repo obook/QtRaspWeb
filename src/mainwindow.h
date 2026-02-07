@@ -9,7 +9,7 @@ $Date: 2020-02-15 10:38:15 +0100 (sam. 15 févr. 2020) $
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <qwebview.h>
+#include <QWebEngineView>
 
 namespace Ui {
 class MainWindow;
@@ -25,10 +25,11 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QWebView *view;
+    QWebEngineView *view;
     QString CURRENT_URL;
     QTimer *timer;
     void delay(int sec);
+    void loadConfig();
     int timewait;
 
 private slots:

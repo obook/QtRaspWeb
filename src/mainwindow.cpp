@@ -10,6 +10,9 @@ $Date: 2020-02-15 10:38:15 +0100 (sam. 15 févr. 2020) $
 
 #include <QShortcut>
 #include <QTimer>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QFile>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,22 +20,19 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    /* Arguments */
+    /* Configuration */
+
+    loadConfig();
 
     const QStringList args = QCoreApplication::arguments();
-    // Si le programme a été ouvert par le biais d'un fichier
     if(args.count() > 1)
     {
         CURRENT_URL = args[1];
     }
-    else
-    {
-        CURRENT_URL = "https://admoov.albertdemun.education/";
-    }
 
     /* Web browser */
 
-    view = new QWebView(this);
+    view = new QWebEngineView(this);
     setCentralWidget(view);
     QObject::connect(view->page(), SIGNAL(loadFinished(bool)), this, SLOT(finishedLoadNotification(bool)));
 
@@ -89,6 +89,26 @@ void MainWindow::delay(int sec)
     QTime dieTime = QTime::currentTime().addSecs(sec);
     while (QTime::currentTime() < dieTime)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+}
+
+void MainWindow::loadConfig()
+{
+    QString configPath = QCoreApplication::applicationDirPath() + "/ADMoovQt.json";
+    QFile file(configPath);
+
+    if (file.exists()) {
+        file.open(QIODevice::ReadOnly);
+        QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+        file.close();
+        CURRENT_URL = doc.object().value("URL").toString();
+    } else {
+        CURRENT_URL = "https://www.google.fr";
+        QJsonObject obj;
+        obj["URL"] = CURRENT_URL;
+        file.open(QIODevice::WriteOnly);
+        file.write(QJsonDocument(obj).toJson());
+        file.close();
+    }
 }
 
 void MainWindow::finishedLoadNotification(bool result)

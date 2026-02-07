@@ -18,8 +18,8 @@ BINARY="ADMoovPiQt"
 
 REQUIRED_PACKAGES=(
     build-essential
-    qtbase5-dev
-    libqt5webkit5-dev
+    qt6-base-dev
+    qt6-webengine-dev
 )
 
 info()  { echo -e "${GREEN}[INFO]${NC} $1"; }
@@ -90,7 +90,7 @@ build() {
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
 
-    qmake "$SRC_DIR/$BINARY.pro"
+    qmake6 "$SRC_DIR/$BINARY.pro"
     make -j"$(nproc)"
 
     if [ ! -f "$BUILD_DIR/$BINARY" ]; then
